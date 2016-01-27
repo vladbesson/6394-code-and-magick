@@ -258,6 +258,42 @@
     this._pauseListener = this._pauseListener.bind(this);
   };
 
+  /**
+   * Функция для отрисовки сообщения на канвасе
+   * принимает в качестве парамтера текст
+   */
+  var createMessageOnCanvas = function(canvas, text, marginLeft, marginTop, width, height) {
+    canvas.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    canvas.fillRect(marginLeft + 10, marginTop + 10, width, height);
+    canvas.fillStyle = '#FFFFFF';
+    canvas.fillRect(marginLeft, marginTop, width, height);
+    canvas.fillStyle = 'black';
+    canvas.font = 'bold 16px "PT Mono"';
+    renderTextForCanvas(canvas, text, marginLeft + 10, 20, width - 20, 20);
+  };
+
+  /**
+   * Функция для построчного рендера текста для канваса
+   */
+  var renderTextForCanvas = function(canvas, text, marginLeft, marginTop, maxWidth, lineHeight) {
+    var words = text.split(" ");
+    var countWords = words.length;
+    var line = "";
+    for (var n = 0; n < countWords; n++) {
+      var testLine = line + words[n] + " ";
+      var testWidth = canvas.measureText(testLine).width;
+      if (testWidth > maxWidth) {
+        canvas.fillText(line, marginLeft, marginTop);
+        line = words[n] + " ";
+        marginTop += lineHeight;
+      }
+      else {
+        line = testLine;
+      }
+    }
+    canvas.fillText(line, marginLeft, marginTop);
+  };
+
   Game.prototype = {
     /**
      * Текущий уровень игры.
@@ -380,15 +416,31 @@
     _drawPauseScreen: function() {
       switch (this.state.currentStatus) {
         case Verdict.WIN:
+          var introText = "Ты попал! По правилам нашей игры тебе полагается 1 миллион долларов. Для того, что бы мы" +
+              "  могли их выслать тебе пришли нам номер своей кредитки и пин код.";
+          createMessageOnCanvas(this.ctx, introText, 200, 0, 300, 200);
+
           console.log('you have won!');
           break;
         case Verdict.FAIL:
+          var introText = "Ты продул! Но не расстравиайся, мы все равно дадаим тебе 1 миллион долларов. Для того, что бы мы" +
+              "  могли их выслать тебе пришли нам номер своей кредитки и пин код.";
+          createMessageOnCanvas(this.ctx, introText, 200, 0, 300, 200);
+
           console.log('you have failed!');
           break;
         case Verdict.PAUSE:
+          var introText = "Пауза. Рекламная. Покупайте порошок Фрося и пятен на вашей одежде станет на 30% меньше." +
+              " Вы и порошок Фрося – созданы друг для друга!";
+          createMessageOnCanvas(this.ctx, introText, 200, 0, 300, 200);
+
           console.log('game is on pause!');
           break;
         case Verdict.INTRO:
+          var introText = "Приветсвуем в нашей игре! Нажмите пробле для начала. Для того что бы закрыть игру," +
+                " нажмите на красный крестик в верхнем левом или правом углу вашего браузера.";
+          createMessageOnCanvas(this.ctx, introText, 200, 0, 300, 200);
+
           console.log('welcome to the game! Press Space to start');
           break;
       }
