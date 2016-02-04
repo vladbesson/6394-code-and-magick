@@ -66,4 +66,18 @@
       }
     }
   };
+
+  formElement.onsubmit = function(e) {
+    e.preventDefault();
+    var dateToExpire = +Date.now() + 7 * 24 * 60 * 60 * 1000;
+    var formattedDateToExpire = new Date(dateToExpire).toUTCString();
+    document.cookie = 'name=' + reviewName.value + ';expires=' + formattedDateToExpire;
+
+    for (var v = 0; v < radioInputs.length; v++) {
+      if (radioInputs[v].checked === true ) {
+        document.cookie = 'review=' + radioInputs[v].value + ';expires=' + formattedDateToExpire;
+      }
+    }
+    this.submit();
+  };
 })();
