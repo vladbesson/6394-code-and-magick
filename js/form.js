@@ -24,10 +24,22 @@
   var reviewName = formElement['review-name'];
   var reviewText = formElement['review-text'];
   var reviewSubmitButton = formElement['review-submit'];
-
-  reviewSubmitButton.disabled = true;
-
   var radioInputs = document.querySelectorAll('#review-form input[type="radio"]');
+  reviewSubmitButton.disabled = true;
+  if (docCookies.hasItem('name')) {
+    reviewName.value = docCookies.getItem('name');
+  }
+  if (docCookies.hasItem('review')) {
+    var reviewVal = docCookies.getItem('review');
+    for (var r = 0; r < radioInputs.length; r++) {
+      if (radioInputs[r].value == reviewVal) {
+        radioInputs[r].checked = true;
+      } else {
+        radioInputs[r].checked = false;
+      }
+    }
+  }
+
   for (var i = 0; i < radioInputs.length; i++) {
     radioInputs[i].onchange = function() {
       if (this.value > 3) {
@@ -65,5 +77,19 @@
         }
       }
     }
+  };
+
+  formElement.onsubmit = function(e) {
+    e.preventDefault();
+    var dateToExpire = +Date.now() + 7 * 24 * 60 * 60 * 1000;
+    var formattedDateToExpire = new Date(dateToExpire).toUTCString();
+    document.cookie = 'name=' + reviewName.value + ';expires=' + formattedDateToExpire;
+
+    for (var v = 0; v < radioInputs.length; v++) {
+      if (radioInputs[v].checked === true ) {
+        document.cookie = 'review=' + radioInputs[v].value + ';expires=' + formattedDateToExpire;
+      }
+    }
+    this.submit();
   };
 })();
