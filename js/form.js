@@ -32,7 +32,7 @@
   if (docCookies.hasItem('review')) {
     var reviewVal = docCookies.getItem('review');
     for (var r = 0; r < radioInputs.length; r++) {
-      if (radioInputs[r].value == reviewVal) {
+      if (radioInputs[r].value === reviewVal) {
         radioInputs[r].checked = true;
       } else {
         radioInputs[r].checked = false;
